@@ -8,6 +8,8 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
     console.log('Seeding started');
 
+    await prisma.category.deleteMany();
+
     const categoryNames = ['poetry', 'crime_fiction', 'romance', 'drama', 'comics'];
 
     await prisma.category.createMany({
@@ -15,6 +17,9 @@ async function main() {
             name: cat,
         }))
     })
+
+    const categories = await prisma.category.findMany();
+    console.log(categories)
 }
 
 main().catch(e => {
