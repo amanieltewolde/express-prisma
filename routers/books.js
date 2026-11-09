@@ -30,15 +30,25 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const id = Number(req.params.id);
 
+    // validazione formato ID
+    if (!Number.isInteger(id)) {
+        return res.status(400).json({
+            error: 'Invalid id',
+        })
+    }
     const book = await prisma.book.findUnique({
         where: {
             id,
         }
     })
 
+    // validazione per risorsa esistente
+    if (!book) {
+        return res.status(404).json({
+            error: 'Book you are looking for was not found.',
+        })
+    }
     res.json(book);
 })
-
-
 
 export default router;
