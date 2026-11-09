@@ -39,6 +39,16 @@ router.get('/:id', async (req, res) => {
     const book = await prisma.book.findUnique({
         where: {
             id,
+        },
+        include: {
+            category: {
+                select: {
+                    id: true,
+                    name: true,
+                }
+            }
+        }, omit: {
+            categoryId: true,
         }
     })
 
