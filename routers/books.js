@@ -4,6 +4,7 @@ import express from "express";
 const router = express.Router();
 
 // URL da usare '/books'
+router.use(express.json());
 
 // INDEX
 router.get('/', async (req, res) => {
@@ -59,6 +60,27 @@ router.get('/:id', async (req, res) => {
         })
     }
     res.json(book);
+})
+
+// STORE
+router.post('/', async (req, res) => {
+    const { title, author, isbn, description, price, categoryId } = req.body;
+
+    const newBook = await prisma.book.create({
+        data: {
+            title,
+            author,
+            isbn,
+            description,
+            price,
+            categoryId,
+        },
+        select: {
+            id: true,
+        }
+    });
+
+    res.status(201).json(newBook);
 })
 
 export default router;
