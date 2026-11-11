@@ -83,4 +83,36 @@ router.post('/', async (req, res) => {
     res.status(201).json(newBook);
 })
 
+// DESTROY
+router.delete('/:id', async (req, res) => {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id)) {
+        return res.status(400).json({
+            error: 'Invalid id',
+        })
+    }
+
+    const book = await prisma.book.findUnique({
+        where: {
+            id,
+        }
+    })
+
+
+    if (!book) {
+        return res.status(404).json({
+            error: 'Book you are looking for was not found.',
+        })
+    }
+
+    await prisma.book.delete({
+        where: {
+            id,
+        }
+    })
+    res.sendStatus(204);
+
+})
+
 export default router;
