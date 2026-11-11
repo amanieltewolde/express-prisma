@@ -92,6 +92,44 @@ router.post('/', async (req, res) => {
     res.status(201).json(newBook);
 })
 
+// UPDATE
+router.patch('/:id', async (req, res) => {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id)) {
+        return res.status(400).json({
+            error: 'Invalid id',
+        })
+    }
+    const { title, author, isbn, description, price, categoryId } = req.body;
+
+    if (categoryId) {
+        const category = await prisma.category.findUnique({
+            where: {
+                id: categoryId,
+            }
+        })
+        if (!category) return res.status(400).json({
+            error: 'CategoryId is not valid'
+        })
+    }
+
+    const updateBook = await prisma.book.update({
+        where: {
+            id,
+        },
+        data: {
+            title,
+            author,
+            isbn,
+            description,
+            price,
+            categoryId,
+        }
+    })
+    res.json(updateBook)
+})
+
 // DESTROY
 router.delete('/:id', async (req, res) => {
     const id = Number(req.params.id);
