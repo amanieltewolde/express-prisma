@@ -66,6 +66,15 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     const { title, author, isbn, description, price, categoryId } = req.body;
 
+    const category = await prisma.category.findUnique({
+        where: {
+            id: categoryId,
+        }
+    })
+    if (!category) return res.status(400).json({
+        error: 'CategoryId is not valid'
+    })
+
     const newBook = await prisma.book.create({
         data: {
             title,
